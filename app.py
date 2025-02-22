@@ -5,9 +5,14 @@ import nltk
 # Initialize Flask app
 app = Flask(__name__)
 
+#qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased-distilled-squad")
+
 # Load NLP models (using a smaller model)
 nltk.download('punkt')
-qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased-distilled-squad")
+# Example with a smaller model like 'distilbert-base-uncased'
+model = pipeline('text-generation', model='distilbert-base-uncased')
+
+
 
 # Route for the home page
 @app.route('/')
@@ -29,7 +34,7 @@ def question_answering():
         return jsonify({"error": "Question and context required!"}), 400
 
     # Perform question answering using the preloaded model
-    result = qa_pipeline({"question": question, "context": context})
+    result = model({"question": question, "context": context})
 
     # Return the result as a JSON response
     return jsonify(result)
