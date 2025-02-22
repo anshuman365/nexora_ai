@@ -1,0 +1,7 @@
+torch
+tensorflow
+scikit-learn
+flask
+transformers
+nltk
+requests
