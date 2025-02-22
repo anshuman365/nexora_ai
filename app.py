@@ -1,13 +1,9 @@
 from flask import Flask, request, jsonify
 from transformers import pipeline
 import nltk
-import tensorflow as tf
 
 # Initialize Flask app
 app = Flask(__name__)
-
-# Disable GPU usage for TensorFlow (ensure only CPU is used)
-tf.config.set_visible_devices([], 'GPU')
 
 # Load NLP models (using a smaller model)
 nltk.download('punkt')
