@@ -5,39 +5,35 @@ import nltk
 # Initialize Flask app
 app = Flask(__name__)
 
-#qa_pipeline = pipeline("question-answering", model="distilbert-base-uncased-distilled-squad")
-
-# Load NLP models (using a smaller model)
+# Download NLTK punkt
 nltk.download('punkt')
-# Example with a smaller model like 'distilbert-base-uncased'
-model = pipeline('text-generation', model='distilbert-base-uncased')
 
-
+# Load a suitable model for text generation (e.g., GPT2)
+model = pipeline('text-generation', model='gpt2')  # or 'distilgpt2' for a lighter model
 
 # Route for the home page
 @app.route('/')
 def home():
     return jsonify({"message": "Welcome to Nexora AI API!"})
 
-# Route for question answering
-@app.route('/qa', methods=['POST'])
-def question_answering():
+# Route for text generation
+@app.route('/generate', methods=['POST'])
+def generate_text():
     # Get data from the request
     data = request.get_json()
 
-    # Get the question and context from the JSON payload
-    question = data.get("question")
-    context = data.get("context")
+    # Get the input text from the JSON payload
+    prompt = data.get("prompt")
 
-    # Check if question and context are provided
-    if not question or not context:
-        return jsonify({"error": "Question and context required!"}), 400
+    # Check if prompt is provided
+    if not prompt:
+        return jsonify({"error": "Prompt is required!"}), 400
 
-    # Perform question answering using the preloaded model
-    result = model({"question": question, "context": context})
+    # Perform text generation using the preloaded model
+    result = model(prompt, max_length=100, num_return_sequences=1)
 
-    # Return the result as a JSON response
-    return jsonify(result)
+    # Return the generated text as a JSON response
+    return jsonify(result[0])
 
 # Run the Flask app
 if __name__ == '__main__':
